@@ -85,3 +85,10 @@ word %>% str_split("") %>% unlist() %>% factor() %>% summary() %>% .[order(.,dec
 #other solution, not sesitive for Upper and lower case 
 word %>% str_count("a|A") %>% sum()
 letters %>% str_c("|", LETTERS) %>% sapply(\(x){word %>% str_count("a|A") %>% sum()})
+
+dir(recursive = T,pattern = "store") %>% readxl::read_excel()->store
+store$`Customer Name` %>% str_split(" ")
+f<-\(x){1:x} #f<-function(x){1:x}
+f(5)
+1:4 %>% sapply(f)
+store$`Customer Name` %>% str_split(" ") %>% sapply(str_sub,end=1) %>% sapply(\(x){paste(x[1],".",x[length(x)],".",sep="")})->store$C.N.

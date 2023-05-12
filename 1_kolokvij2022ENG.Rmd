@@ -1,0 +1,144 @@
+---
+title: "Midterm (75 minutes)"
+author: "Polina"
+date: "`r Sys.Date()`"
+output: 
+  html_document: 
+    toc: yes
+    toc_float: yes
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning=F,message = F,error = T)
+
+```
+
+```{r}
+3+"as"
+```
+
+## Intro (2 points)
+
+Solve the tasks, knit to html and upload the knitted document to
+eclassrom. Set RMarkdown global setting to show the code, hide messages
+and warnings and enable knitting even if the errors occur. If you will
+upload only rmd file (not knitted to html), a half points will be
+deducted from your final score.
+
+Good luck!
+
+\## Task 1 (5 points)
+
+Import the data from:
+<https://raw.githubusercontent.com/urosgodnov/datasets/master/diabetes.csv>
+
+Show:
+
+\- dataframe dimension - use sapply to show the class of every column -
+convert Age column to factor with breakes (0,30],
+(30,40],(40,60],(60,90] - show the frequencies of Age column - what is
+the frequency of Age in the interval (40,60]?
+
+```{r}
+library(tidyverse)
+"https://raw.githubusercontent.com/urosgodnov/datasets/master/diabetes.csv" %>% read.csv->df1
+df1%>%dim()
+df1%>%sapply(class)
+df1$Age %>% cut(c(0,30,60,90))->df1$Age
+df1$Age %>% summary()
+df1$Age %>% summary() %>% .["(40,60)"] ##????
+```
+
+\## Task 2 (5 points)
+
+Install and load janeaustenr package. With austen_books() function store
+the data into dftext variable.
+
+Answer:
+
+\- how many different books are in the dftext variable?
+
+\- how many rows does the book Persuasion contain?
+
+\- how many rows contain the letter a/A?
+
+\- how many rows start AND end with the letter a/A?
+
+```{r}
+library(janeaustenr)
+dftext <- austen_books() 
+dftext$book %>% unique() %>% length()
+dftext %>% .[.$book=="Persuasion",] %>% nrow()
+(dftext$book=="Persuasion") %>% sum()
+dftext %>% .[grep("a|A",.$text),] %>% nrow()
+dftext %>% .[grepl("(a|A)$",.$text) & grepl("^(a|A)",.$text),]
+dftext %>% .[grepl("^(a|A).*(a|A)$",.$text),] %>% nrow()
+
+```
+
+\## Task 3 (4 points)
+
+Create 100 random dates in the years 2021.
+
+\- which month has the highest frequency? What is the frequency?
+
+\- Which weekday has the highest frequency? What is the frequency?
+
+\- choose the first 5 dates and print the whole weekday name in german
+language.
+
+```{r}
+library(lubridate)
+dates<-make_date(2021,sample(1:12),sample(1:28, 100, replace=TRUE))
+"1.1.2021" %>% dmy() %>% {.+days(0:364)} %>% sample(100)
+dates %>% month(label = T, abbr=F) %>% summary %>% .[max(.)==.]
+dates %>% wday(label = T, abbr=F) %>% summary %>% .[max(.)==.]
+dates %>% .[1:5] %>% wday(label=T,abbr=F, locate="German")
+```
+
+\## Task 4 (4 points)
+
+Import data from
+<https://raw.githubusercontent.com/urosgodnov/datasets/master/RandomData.csv>
+into variable dfCar.
+
+Answer:
+
+\- what is the average cars' age (in years) in 2021?
+
+\- what is the average (in days) from the purchase on today's date? Mind
+the purchase date has the format m/d/y. Transform the result to seconds
+with a proper function.
+
+\- both results should be presented in a table 2x2, which you can create
+with the Rmarkdown visual editor.
+
+```{r}
+"https://raw.githubusercontent.com/urosgodnov/datasets/master/RandomData.csv" %>% read.csv()->df4
+df4 %>% head()
+df4$CarModelYear %>% {2021-.} %>% mean()->a
+df4$PurchaseDate %>% mdy() %>% difftime(today(),.,units="secs") %>% mean()->b
+```
+
+| task | result |
+|------|--------|
+| 1    | `r a` years  |
+| 2    | `r b`  sec |
+
+: Result
+
+\## Task 5 (5 points)
+
+Given a vector of numbers x\<-10001:20000 find all numbers, where sqrt
+of a number is a whole number. Result should be one vector with all the
+correct numbers!! How many numbers are in the result vector?
+
+```{r}
+x<-10001:20000
+x %>% {s<-sqrt(.);.[round(s)==s]}
+x %>% {s<-sqrt(.);.[round(s)==s]} %>% length()
+```
+
